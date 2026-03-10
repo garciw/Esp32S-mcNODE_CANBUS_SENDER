@@ -276,13 +276,18 @@ void sendStatusToECU() {
 }
 
 // ============================================================
-// SERIAL SEND
+// SERIAL SEND (WITH MAGIC HEADER)
 // ============================================================
 void send_data() {
   canData.id = msg_count++;
+  
+  // 🛑 NEW: The "Magic Barcode" Synchronization Header
+  const uint8_t header[4] = {0xAA, 0xBB, 0xCC, 0xDD};
+  ScreenSerial.write(header, 4);
+  
+  // Send the actual engine data
   ScreenSerial.write((uint8_t*)&canData, sizeof(canData));
 }
-
 // ============================================================
 // CAN PARSER (Standard)
 // ============================================================
